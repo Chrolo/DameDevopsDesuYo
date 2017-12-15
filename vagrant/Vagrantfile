@@ -1,0 +1,35 @@
+# Vagrant File used to bring up a live-like environment for local development of the Subpar Project
+Vagrant.configure("2") do |config|
+  #define the base vm
+  config.vm.box = "elastic/ubuntu-16.04-x86_64"
+
+  config.vm.provider "virtualbox" do |v|
+    v.name = "DameDevOpsDesuYo"
+  end
+
+
+  #make it available locally as "192.168.13.37"
+  config.vm.network "private_network", ip: "192.168.13.37"
+  #allow it to access the internet
+  #config.vm.network "public_network"
+
+  # --- Using ansible --- #
+
+  # Move across any files needed on the machine
+  config.vm.provision "file", source: "../ansible", destination: "/tmp/ansible"
+  config.vm.provision "shell", inline: "sudo rm -f -r /ansible"
+  config.vm.provision "shell", inline: "sudo mv /tmp/ansible /"
+  config.vm.provision "shell", inline: "echo ls /ansible"
+
+  #Provisioning with ansible (using the guestVM to sort itself out)
+  config.vm.provision :ansible_local do |ansible|
+      ansible.provisioning_path = "/ansible"
+      ansible.playbook = "ansibleBase.yml"
+      ansible.sudo = true
+  end
+
+  config.vm.provision :shell do |sh|
+      sh.inline = "echo provisioning complete"
+  end
+
+end

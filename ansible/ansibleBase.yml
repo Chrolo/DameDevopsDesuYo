@@ -1,0 +1,10 @@
+---
+-   hosts: all
+    become: true
+    become_user: root
+    remote_user: vagrant
+
+    roles:
+        - base
+        - database
+        - subpar

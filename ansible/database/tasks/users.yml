@@ -1,0 +1,24 @@
+# Removes anonymous user account for localhost
+- mysql_user:
+    name: ''
+    host: localhost
+    state: absent
+
+# Removes all anonymous user accounts
+- mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+
+# create a quick admin account
+- mysql_user:
+    name: admin
+    password: admin
+    priv: '*.*:ALL'
+    state: present
+
+# create subpar account with no password requirement
+- mysql_user:
+    name: subpar
+    priv: 'subpar.*:ALL'
+    state: present

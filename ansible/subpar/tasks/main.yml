@@ -1,0 +1,32 @@
+---
+- name: Checkout the subpar-project-tracker from github
+  git:
+    repo: 'https://github.com/Chrolo/subpar-project-tracker.git'
+    dest: /home/vagrant/subpar
+
+- name: install subpar dependencies
+  command: npm install
+  args:
+    chdir: /home/vagrant/subpar
+
+- name: Checkout Mysql-DB-Builder from github
+  git:
+    repo: 'https://github.com/Chrolo/Mysql-DB-Builder.git'
+    dest: /home/vagrant/mysqlBuilder
+
+- name: make sure vagrant owns these directories
+  file:
+    path:  /home/vagrant/
+    owner: vagrant
+    state: directory
+    recurse: yes
+
+- name: install mysqlBuilder dependencies
+  command: npm install
+  args:
+    chdir: /home/vagrant/mysqlBuilder
+
+- name: setup the mysql tables using mysql builder
+  command:  node src/main.js -c ../subpar/docs/database.json -u subpar -h localhost
+  args:
+    chdir: /home/vagrant/mysqlBuilder

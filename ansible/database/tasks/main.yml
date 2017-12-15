@@ -1,0 +1,13 @@
+---
+- name: install mysql server (and dependencies)
+  apt: name={{ item }} state=present
+  with_items:
+    - mysql-server
+    - python-mysqldb
+
+- name: Remove the MySQL test database
+  action: mysql_db db=test state=absent
+
+- include: databases.yml
+- include: users.yml
+# and set bind address (local is fine)
